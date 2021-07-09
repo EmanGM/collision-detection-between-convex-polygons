@@ -25,6 +25,9 @@ Polygon::Polygon(int numberSides, sf::FloatRect rect, std::vector<sf::Vector2f> 
 	//create lines for SAT debug
 	isNormalsVisible = false;
 	lines.setPrimitiveType(sf::Lines);
+	for (int i = 0; i < lados * 2; i++) {
+		lines.append(sf::Vector2f(0.0f, 0.0f));
+	}
 	setNormalLines();
 }
 
@@ -32,12 +35,12 @@ void Polygon::setNormalLines() {
 
 	sf::Vector2f center(rect.left, rect.top);
 	for (int i = 0; i < lados; i++) {
-		lines.append(sf::Vertex(center));
+		lines[2*i] = sf::Vertex(center);
 		sf::Vector2f normalVector;
 		normalVector.x = -(getPoint(i).y - getPoint(i + 1 < lados ? i + 1 : 0).y);
 		normalVector.y = getPoint(i).x - getPoint(i + 1 < lados ? i + 1 : 0).x;
 		float norm = sqrt(pow(normalVector.x, 2) + pow(normalVector.y, 2));
-		lines.append(sf::Vector2f(normalVector / norm * 80.0f + center));
+		lines[2*i+1] = sf::Vector2f(normalVector / norm * 80.0f + center);
 	}
 }
 
@@ -63,6 +66,7 @@ void Polygon::move(sf::Vector2f offset) {
 
 void Polygon::rotate(float angle) {
 	polygon.rotate(angle);
+	setNormalLines();
 }
 
 

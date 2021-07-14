@@ -29,10 +29,11 @@ int main() {
 		triangle,
 		square,
 		pentagon,
+		costumShape,
 	};
 
 
-	sf::RenderWindow window(sf::VideoMode(600, 600), "Collision Detection");
+	sf::RenderWindow window(sf::VideoMode(700, 700), "Collision Detection");
 
 	std::vector<Polygon> polys;
 
@@ -56,6 +57,15 @@ int main() {
 	pentagonPoints.push_back(sf::Vector2f(15.0f, 80.0f));
 	pentagonPoints.push_back(sf::Vector2f(0.0f, 35.0f));
 	polys.push_back(Polygon(5, sf::FloatRect(310.0f, 320.0f, 80.0f, 80.0f), pentagonPoints, sf::Color(151, 164, 253)));
+
+	std::vector<sf::Vector2f> costumShapePoints;
+	costumShapePoints.push_back(sf::Vector2f(40.0f, 0.0f));
+	costumShapePoints.push_back(sf::Vector2f(85.0f, 40.0f));
+	costumShapePoints.push_back(sf::Vector2f(70.0f, 90.0f));
+	costumShapePoints.push_back(sf::Vector2f(20.0f, 70.0f));
+	costumShapePoints.push_back(sf::Vector2f(0.0f, 45.0f));
+	costumShapePoints.push_back(sf::Vector2f(25.0f, 5.0f));
+	polys.push_back(Polygon(6, sf::FloatRect(280.0f, 430.0f, 90.0f, 90.0f), costumShapePoints, sf::Color(237, 237, 78)));
 	
 
 	Polygon* currentPoly = NULL;
@@ -63,14 +73,19 @@ int main() {
 	bool movePolygon2 = true;
 
 	sf::Font font;
-	sf::Text controlText;
 	font.loadFromFile("RegularFont\\tecnico_regular.ttf");
-	controlText.setFont(font);
-	const std::string text = "click Left Arrow and Right Arrow to change method";
-	controlText.setString(text);
-	controlText.setCharacterSize(23);
+
+	sf::Text controlText("click Left Arrow and Right Arrow to change method", font, 25);
 	controlText.setFillColor(sf::Color::White);
 	controlText.setPosition(sf::Vector2f(20.0f, 20.0f));
+
+	sf::Text textMovePoly("click AWSD to move the polygon", font, 20);
+	textMovePoly.setFillColor(sf::Color::White);
+	textMovePoly.setPosition(sf::Vector2f(20.0f, 60.0f));
+
+	sf::Text textRotatePoly("click Q and E to rotate the shape", font, 20);
+	textRotatePoly.setFillColor(sf::Color::White);
+	textRotatePoly.setPosition(sf::Vector2f(20.0f, 100.0f));
 
 
 	while (window.isOpen()){
@@ -91,6 +106,10 @@ int main() {
 					if (polys[pentagon].checkMouseClick(mouse)) {
 						std::cout << "Clicked pentagon\n";
 						currentPoly = &polys[pentagon];
+					}
+					if (polys[costumShape].checkMouseClick(mouse)) {
+						std::cout << "Clicked costum shape\n";
+						currentPoly = &polys[costumShape];
 					}
 				}
 			}
@@ -146,7 +165,7 @@ int main() {
 							std::cout << "Erro";
 							break;
 					}
-					controlText.setString(text);
+					controlText.setString("");
 
 				} else if (event.key.code == sf::Keyboard::Key::Right) {
 					collisionMethod++;
@@ -180,7 +199,7 @@ int main() {
 							std::cout << "Erro";
 							break;
 					}
-					controlText.setString(text);
+					controlText.setString("");
 				}
 			}
 
@@ -218,6 +237,8 @@ int main() {
 		if (currentPoly)
 			currentPoly->draw(window);
 		window.draw(controlText);
+		window.draw(textMovePoly);
+		window.draw(textRotatePoly);
 		window.display();
 	}
 }

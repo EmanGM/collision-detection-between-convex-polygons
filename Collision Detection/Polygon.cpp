@@ -10,17 +10,16 @@ Polygon::Polygon(int numberSides, sf::FloatRect rect, std::vector<sf::Vector2f> 
 	for (int i = 0; i < lados; i++) {
 		polygon.setPoint(i, points[i]);
 	}
-	polygon.setPosition(sf::Vector2f(this->rect.left, this->rect.top));
 	polygon.setOrigin(sf::Vector2f(this->rect.width / 2, this->rect.height / 2));
+	polygon.setPosition(sf::Vector2f(this->rect.left + this->rect.width / 2, this->rect.top + this->rect.height / 2));
 	polygon.setFillColor(color);
 
 	//create square for AABB debug
 	isBoxVisible = false;
 	box.setOutlineThickness(-1.5f);
 	box.setOutlineColor(sf::Color::White);
-	box.setPosition(sf::Vector2f(this->rect.left, this->rect.top));
-	box.setSize(sf::Vector2f(this->rect.width, this->rect.height));
 	box.setFillColor(sf::Color::Transparent);
+	setBoundingBox();
 
 	//create lines for SAT debug
 	isNormalsVisible = false;
@@ -31,9 +30,16 @@ Polygon::Polygon(int numberSides, sf::FloatRect rect, std::vector<sf::Vector2f> 
 	setNormalLines();
 }
 
+
+void Polygon::setBoundingBox() {
+	rect = polygon.getGlobalBounds();
+	box.setPosition(sf::Vector2f(this->rect.left, this->rect.top));
+	box.setSize(sf::Vector2f(this->rect.width, this->rect.height));
+}
+
 void Polygon::setNormalLines() {
 
-	sf::Vector2f center(rect.left, rect.top);
+	sf::Vector2f center(rect.left + rect.width / 2, rect.top + rect.height / 2);
 	for (int i = 0; i < lados; i++) {
 		lines[2*i] = sf::Vertex(center);
 		sf::Vector2f normalVector;
@@ -46,10 +52,7 @@ void Polygon::setNormalLines() {
 
 
 bool Polygon::checkMouseClick(sf::Vector2f mousePosition) {
-	if (this->rect.contains(int(mousePosition.x), int(mousePosition.y))) {
-		return true;
-	}
-	return false;
+	return this->rect.contains(int(mousePosition.x), int(mousePosition.y));
 }
 
 
@@ -59,14 +62,14 @@ void Polygon::move(sf::Vector2f offset) {
 	for (int i = 0; i < lines.getVertexCount(); i++) {
 		lines[i].position += offset;
 	}
-	rect.top = polygon.getPosition().y;
-	rect.left = polygon.getPosition().x;
+	rect = polygon.getGlobalBounds();
 }
 
 
 void Polygon::rotate(float angle) {
 	polygon.rotate(angle);
 	setNormalLines();
+	setBoundingBox();
 }
 
 

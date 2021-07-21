@@ -15,6 +15,7 @@ private:
 	sf::VertexArray lines;
 
 	void setNormalLines();
+	void setBoundingBox();
 
 
 public:

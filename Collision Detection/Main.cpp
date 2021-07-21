@@ -8,7 +8,7 @@
 //AABB stands for Axis Align Bounding Box
 bool AABB(Polygon polygon1, Polygon polygon2);
 
-//SAT stands for separated axis theorem
+//SAT stands for Separated Axis Theorem
 bool SAT(Polygon &polygon1, Polygon &polygon2);
 
 //SAT with static resolution (pushes the shapes back if overlaped)
@@ -41,14 +41,14 @@ int main() {
 	trianglePoints.push_back(sf::Vector2f(35.0f, 0.0f));
 	trianglePoints.push_back(sf::Vector2f(70.0f, 70.0f));
 	trianglePoints.push_back(sf::Vector2f(0.0f, 70.0f));
-	polys.push_back(Polygon(3, sf::FloatRect(100.0f, 100.0f, 70.0f, 70.0f), trianglePoints, sf::Color(210, 100, 100)));
+	polys.push_back(Polygon(3, sf::FloatRect(100.0f, 140.0f, 70.0f, 70.0f), trianglePoints, sf::Color(210, 100, 100)));
 
 	std::vector<sf::Vector2f> squarePoints;
 	squarePoints.push_back(sf::Vector2f(0.0f, 0.0f));
 	squarePoints.push_back(sf::Vector2f(80.0f, 0.0f));
 	squarePoints.push_back(sf::Vector2f(80.0f, 80.0f));
 	squarePoints.push_back(sf::Vector2f(0.0f, 80.0f));
-	polys.push_back(Polygon(4, sf::FloatRect(420.0f, 400.0f, 80.0f, 80.0f), squarePoints, sf::Color(151, 254, 146)));
+	polys.push_back(Polygon(4, sf::FloatRect(480.0f, 410.0f, 80.0f, 80.0f), squarePoints, sf::Color(151, 254, 146)));
 
 	std::vector<sf::Vector2f> pentagonPoints;
 	pentagonPoints.push_back(sf::Vector2f(40.0f, 0.0f));
@@ -58,14 +58,15 @@ int main() {
 	pentagonPoints.push_back(sf::Vector2f(0.0f, 35.0f));
 	polys.push_back(Polygon(5, sf::FloatRect(310.0f, 320.0f, 80.0f, 80.0f), pentagonPoints, sf::Color(151, 164, 253)));
 
+	//Can change the points of this convex polygon
 	std::vector<sf::Vector2f> costumShapePoints;
+	costumShapePoints.push_back(sf::Vector2f(25.0f, 5.0f));
 	costumShapePoints.push_back(sf::Vector2f(40.0f, 0.0f));
 	costumShapePoints.push_back(sf::Vector2f(85.0f, 40.0f));
-	costumShapePoints.push_back(sf::Vector2f(70.0f, 90.0f));
+	costumShapePoints.push_back(sf::Vector2f(70.0f, 85.0f));
 	costumShapePoints.push_back(sf::Vector2f(20.0f, 70.0f));
 	costumShapePoints.push_back(sf::Vector2f(0.0f, 45.0f));
-	costumShapePoints.push_back(sf::Vector2f(25.0f, 5.0f));
-	polys.push_back(Polygon(6, sf::FloatRect(280.0f, 430.0f, 90.0f, 90.0f), costumShapePoints, sf::Color(237, 237, 78)));
+	polys.push_back(Polygon(6, sf::FloatRect(260.0f, 530.0f, 90.0f, 90.0f), costumShapePoints, sf::Color(237, 237, 78)));
 	
 
 	Polygon* currentPoly = NULL;
@@ -75,17 +76,20 @@ int main() {
 	sf::Font font;
 	font.loadFromFile("RegularFont\\tecnico_regular.ttf");
 
-	sf::Text controlText("click Left Arrow and Right Arrow to change method", font, 25);
-	controlText.setFillColor(sf::Color::White);
-	controlText.setPosition(sf::Vector2f(20.0f, 20.0f));
+	sf::Text textChangeMethod("click Left Arrow and Right Arrow to change method", font, 25);
+	textChangeMethod.setFillColor(sf::Color::White);
+	textChangeMethod.setPosition(sf::Vector2f(20.0f, 20.0f));
+	bool methodChanged = false;
 
-	sf::Text textMovePoly("click AWSD to move the polygon", font, 20);
+	sf::Text textMovePoly("click AWSD to move the polygon", font, 25);
 	textMovePoly.setFillColor(sf::Color::White);
-	textMovePoly.setPosition(sf::Vector2f(20.0f, 60.0f));
+	textMovePoly.setPosition(sf::Vector2f(110.0f, 60.0f));
+	bool polygonMoved = false;
 
-	sf::Text textRotatePoly("click Q and E to rotate the shape", font, 20);
+	sf::Text textRotatePoly("click Q and E to rotate the shape", font, 25);
 	textRotatePoly.setFillColor(sf::Color::White);
-	textRotatePoly.setPosition(sf::Vector2f(20.0f, 100.0f));
+	textRotatePoly.setPosition(sf::Vector2f(100.0f, 100.0f));
+	bool polygonRotated = false;
 
 
 	while (window.isOpen()){
@@ -115,23 +119,35 @@ int main() {
 			}
 			if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Key::A) {
-					if (currentPoly != NULL)
+					if (currentPoly != NULL) {
+						polygonMoved = true;
 						currentPoly->move(sf::Vector2f(-10.0f, 0.0f));
+					}
 				} else if (event.key.code == sf::Keyboard::Key::D) {
-					if (currentPoly != NULL)
+					if (currentPoly != NULL) {
+						polygonMoved = true;
 						currentPoly->move(sf::Vector2f(10.0f, 0.0f));
+					}
 				} else if (event.key.code == sf::Keyboard::Key::W) {
-					if (currentPoly != NULL)
+					if (currentPoly != NULL) {
+						polygonMoved = true;
 						currentPoly->move(sf::Vector2f(0.0f, -10.0f));
+					}
 				} else if (event.key.code == sf::Keyboard::Key::S) {
-					if (currentPoly != NULL)
+					if (currentPoly != NULL) {
+						polygonMoved = true;
 						currentPoly->move(sf::Vector2f(0.0f, 10.0f));
+					}
 				} else if (event.key.code == sf::Keyboard::Key::Q) {
-					if (currentPoly != NULL)
+					if (currentPoly != NULL) {
+						polygonRotated = true;
 						currentPoly->rotate(15);
+					}
 				} else if (event.key.code == sf::Keyboard::Key::E) {
-					if (currentPoly != NULL)
+					if (currentPoly != NULL) {
+						polygonRotated = true;
 						currentPoly->rotate(-15);
+					}
 
 				} else if (event.key.code == sf::Keyboard::Key::Left) {
 					collisionMethod--;
@@ -165,7 +181,7 @@ int main() {
 							std::cout << "Erro";
 							break;
 					}
-					controlText.setString("");
+					methodChanged = true;
 
 				} else if (event.key.code == sf::Keyboard::Key::Right) {
 					collisionMethod++;
@@ -199,10 +215,9 @@ int main() {
 							std::cout << "Erro";
 							break;
 					}
-					controlText.setString("");
+					methodChanged = true;
 				}
 			}
-
 			if (event.type == sf::Event::Closed) {
 				window.close();
 			}
@@ -229,6 +244,7 @@ int main() {
 			}
 		}
 
+		//function calls to render on screen
 		window.clear();
 		for (int i = 0; i < polys.size(); i++) {
 			polys[i].draw(window);
@@ -236,9 +252,12 @@ int main() {
 		//make sure current poly is the last one drawn
 		if (currentPoly)
 			currentPoly->draw(window);
-		window.draw(controlText);
-		window.draw(textMovePoly);
-		window.draw(textRotatePoly);
+		if(!methodChanged)
+			window.draw(textChangeMethod);
+		if(!polygonMoved)
+			window.draw(textMovePoly);
+		if(!polygonRotated)
+			window.draw(textRotatePoly);
 		window.display();
 	}
 }
@@ -273,7 +292,7 @@ bool SAT(Polygon &polygon1, Polygon &polygon2) {
 		p2Points[i] = polygon2.getPoint(i);
 	}
 
-	//for fisrt polygon
+	//for first polygon
 	for (int firstPoint = 0; firstPoint < p1Lados; firstPoint++) {
 		int secondPoint = (firstPoint + 1) % p1Lados;
 
@@ -364,10 +383,6 @@ bool SAT_static(Polygon &polygon1, Polygon &polygon2, bool hardPush) {
 	for (int i = 0; i < p2Lados; i++) {
 		p2Points[i] = polygon2.getPoint(i);
 	}
-
-	//idea to implement
-	Polygon* p1 = &polygon1;
-	Polygon* p2 = &polygon2;
 
 
 	//for fisrt polygon
